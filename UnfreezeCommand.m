@@ -1,0 +1,56 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                         %
+%            U.S. Army Combat Capabilities Development Command            %
+%        Systems Simulation, Software and Integration Directorate         %
+%                          Redstone Arsenal, AL                           %
+%*************************************************************************%
+% Copyright $<year> US Army                                               %                    
+%                                                                         %
+% Licensed under the Apache License, Version 2.0 (the "License");         %
+% you may not use this file except in compliance with the License.        %
+% You may obtain a copy of the License at:                                %
+%                                                                         %
+%    http://www.apache.org/licenses/LICENSE-2.0                           %
+%                                                                         %
+% Unless required by applicable law or agreed to in writing, software     %
+% distributed under the License is distributed on an "AS IS" BASIS,       %
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.%
+% See the License for the specific language governing permissions and     %
+% limitations under the License.                                          %
+%                                                                         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MODIFICATION HISTORY:
+%   15 NOV 2021 - Ryan Mabry, CCDC AVMC, ryan.m.mabry2.civ@army.mil
+%       * Initial implementation' 
+%
+
+classdef UnfreezeCommand
+    %UnfreezeCommand Conversion of CR_Unfreeze.m
+    
+    properties
+        debugMode = false;
+        userData = [];
+        speedGoatName = "";
+    end
+    
+    methods
+        %examine variable
+        function [outputStr, errorFlag] = UnfreezeCommand(obj, varargin)
+            dataTableObj, unfreezeVariable
+            outputArg = false;    
+            [index, machine] = TestGUI('findFreezeIndex',handles,variableTwo);
+            %index = findWriteIndex(handles,match{2}); J Bell 6/27/15 - changed to findFreezeIndex because
+            %FindWriteIndex was unable to find the freeze variable.
+            if index == -1
+                %TODO ERROR HANDLER
+            elseif ~obj.debugMode
+                if contains(machine,'tg6111')
+                    setparam(handles.tg6111,userData.varValues{index}.control,0);
+                else
+                    setparam(handles.tg6112,userData.varValues{index}.control,0);
+                end
+                outputArg = true;
+            end
+        end
+    end
+end
